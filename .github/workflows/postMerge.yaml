@@ -35,7 +35,19 @@ jobs:
       - name: Security Audit
         run: npm audit --production --audit-level=high || true
 
-      # --- 6) Deploy ---
-      - name: Deploy
-        run: |
-          echo "Deploying to production..."
+          # --- 5) Upload static site artifact (out directory) ---
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
